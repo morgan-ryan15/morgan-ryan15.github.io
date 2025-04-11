@@ -1,5 +1,5 @@
 ---
-title: "Home"
+title: ""
 about: 
   id: intro-heading
   template: trestles
@@ -11,7 +11,6 @@ about:
       href: https://www.linkedin.com/in/morgan-ryan-4a6278232/
     - icon: github
       href: https://github.com/morgan-ryan15
-
 format: html
 editor_options: 
   chunk_output_type: console
@@ -19,19 +18,22 @@ editor_options:
 
 ## Morgan Ryan
 
-A Junior At St. Olaf College, studying Computer Science with a concentration in Data Science and Statistics.
+I'm currently a Junior at St. Olaf College, studying Computer Science with a concentration in Statistics and Data Science.
 
-## Experience 
+## Experience
 
 IT Service Desk Intern
+
 May 2024 - August 2024
 
-## Education 
+## Education
 
 BA in Computer Science, Concentration in Statistics and Data Science
+
 2026 | St. Olaf College
 
 ## About Me
+
 I have an interest in cybersecurity and enjoy doing online labs to expand my knowledge. But I also can't help but have a passion for data, it's a great tool to be able to tell stories with.
 
-Outside of the classroom, I'm a captain on the St. Olaf Volleyball team. I play libero, that person in the back row, in the different colored jersey, that's me! I love encouraging my teammates, celebrating our successes, and I don't shy away from difficult games. 
+Outside of the classroom, I'm a captain on the St. Olaf Volleyball team. I play libero, that person in the back row, in the different colored jersey, that's me! I love encouraging my teammates, celebrating our successes, and close games.

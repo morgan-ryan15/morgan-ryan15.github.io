@@ -1,5 +1,22 @@
 project:
-  title: "morgan-ryan15.github.io"
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+  
+website:
+  title: "Morgan Ryan"
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
+      - Maps.qmd
+      - Data-Acquisition.qmd 
+format:
+  html:
+    theme: cosmo
+    toc: true
+  
 
 editor: visual
 

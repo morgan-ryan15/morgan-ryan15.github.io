@@ -1,0 +1,251 @@
+---
+title: "Static and Interactive Maps"
+author: "Morgan Ryan"
+format: 
+  html: default
+editor_options:
+  chunk_output_type: console
+resource_files:
+- "Maps.html"
+---
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(maps)
+library(viridis)
+library(janitor)
+library(leaflet)
+library(htmltools)
+library(glue)
+library(sf)
+
+#data for proj
+death_data <- read_csv("~/SDS264_F24/SDS264/Data/death.csv")
+
+#data for map
+us_states <- map_data("state")
+head(us_states)
+
+#sf 
+states <- read_sf("https://rstudio.github.io/leaflet/json/us-states.geojson")  #<2>
+class(states) #<3>
+states
+
+```
+
+```{r}
+#Interactive Graph #1 with Numeric Variable
+
+#| warning: false
+
+#fixing up states data to match death data formatting of state names
+states <- states |>
+  mutate(name = str_to_lower(name))
+
+#begin filtering and mutating death data 
+int_death_data <- death_data |>
+  clean_names() |>
+  select(year, cause_name, state, deaths) |>
+  mutate(state = str_to_lower(state)) |>
+  filter(!(state %in% c("alaska", "hawaii", "united states"))) |>
+  filter(cause_name %in% c("Heart disease"), year == 2017) |>
+  #join death data with death data to get geometry column
+  right_join(states, by = c("state" = "name")) |>
+  rename(name = state) 
+
+#geometry column not recognized, use old sf function
+int_death_data2 <- sf::st_as_sf(int_death_data) |>
+  filter(!(name %in% c("alaska", "hawaii", "puerto rico"))) |>
+  mutate(name = str_to_title(name))
+
+#defining color palette
+pal <- colorNumeric(palette = "PuRd", domain = c(0, 65000))
+
+#leaflet plot 
+leaflet(int_death_data2) |>
+  setView(-96, 37.8, 3) |>
+  addTiles() |>
+  addPolygons(
+    weight = 1, 
+    opacity = 1,
+    dashArray = "3",
+    fillOpacity = 0.8,
+    highlightOptions = highlightOptions(
+      weight = 5,
+      color = "#666", 
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    popup = ~paste(name, "</br>", "Amount of deaths due to heart disease: ", deaths),
+    color = ~pal(deaths)) |>
+    addLegend(pal = pal, values = ~int_death_data2$deaths, 
+          opacity = 0.7, title = "Number of Deaths", position = "bottomright") |>
+      addControl("<h4>Deaths Due To Heart Disease in the U.S in 2017.</h4>",
+               position = "topright",
+               className = "map-title") |>
+      addControl("<h6>Data Source: data.gov.</h6>",
+               position = "bottomleft",
+               className = "map-title")
+
+```
+
+```{r}
+
+#Graph #2 Interactive Categorical
+#| warning: false
+
+states <- states |>
+  mutate(name = str_to_lower(name))
+
+int_cat_death_data <- death_data |>
+  #cleaning col names and selecting cols
+  clean_names() |>
+  select(year, cause_name, state, deaths) |>
+  mutate(state = str_to_lower(state)) |>
+  
+  #filtering cols for join
+  filter(!(state %in% c("alaska", "hawaii", "united states"))) |>
+  filter(cause_name %in% c("Alzheimer's disease", "Stroke"), year == 2017) |>
+  
+  
+  #pivot so no more two rows per state - tidy data
+  pivot_wider(
+    names_from = cause_name,
+    values_from = deaths 
+  ) |>
+  
+  #get counts and condition for cat var 
+  clean_names() |>
+  count(state, stroke, alzheimers_disease) |>
+  mutate(death_type = ifelse(stroke > alzheimers_disease, "Stroke", "Alzheimer's")) |>
+  
+  #right join to get states data
+  right_join(states, by = c("state" = "name")) |>
+  rename(name = state) 
+
+
+#fixes  error about not having my geometry column recognized
+int_cat_death_data2 <- sf::st_as_sf(int_cat_death_data) |>
+  filter(!(name %in% c("alaska", "hawaii", "puerto rico"))) |>
+  mutate(name = str_to_title(name))
+
+pal <- colorFactor("PRGn", int_cat_death_data2$death_type)
+
+leaflet(int_cat_death_data2) |>
+  setView(-95, 37.8, 3) |>
+  addTiles() |>
+  addPolygons(
+    weight = 1, 
+    opacity = 1,
+    dashArray = "3",
+    fillOpacity = 0.8,
+    highlightOptions = highlightOptions(
+      weight = 5,
+      color = "#666", # state outline darkness
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    color = ~pal(int_cat_death_data2$death_type),
+    popup = ~paste(name, "</br>", "Cause of Death: ", death_type)) |>
+    addLegend(pal = pal, values = ~int_cat_death_data2$death_type, 
+          opacity = 0.7, title = "Cause of Deaths" , position = "bottomright") |>
+    addControl("<h4>Greater Cause of Deaths Between Stroke or Alzheimer's in the U.S.</h4>",
+               position = "topright",
+               className = "map-title") |>
+    addControl("<h6>Data Source: data.gov.</h6>",
+               position = "bottomleft",
+               className = "map-title")
+```
+
+[Link To Interactive Plots](https://github.com/morgan-ryan15/SDS264_F24/blob/main/SDS264/projects/interactive-mini1.qmd)
+
+```{r}
+#examine state levels
+unique(us_states$region)
+unique(death_data$State)
+```
+
+```{r}
+#Graph #1: Static with Numeric Value
+num_death_data <- death_data |>
+  
+  #clean column names and select cols
+  clean_names() |>
+  select(year, cause_name, state, deaths) |>
+  mutate(state = str_to_lower(state)) |>
+  
+  #filter -> wanted data to avoid many-to-many issue before join by shrinking dataset down
+  filter(!(state %in% c("alaska", "hawaii", "united states"))) |>
+  filter(cause_name %in% c("Heart disease"), year == 2017) |>
+  
+
+  #join data from us states into numerical death data set
+  right_join(us_states, by = c("state" = "region")) |>
+  rename(region = state) 
+
+  #plotting data 
+num_death_data |>
+  ggplot(mapping = aes(x = long, y = lat,
+                       group = group)) + 
+  geom_polygon(aes(fill = deaths), color = "black") +
+  coord_map() +  
+  theme_void() +  
+  scale_fill_viridis() +
+  labs(   
+    title = "United States: Deaths By Heart Disease in 2017",
+    fill = "Number of Deaths",
+    caption = "Data Source: data.gov")
+```
+
+Description Graph #1: This is a static graph with a numeric variable used to fill in the United States. Using data from data.gov, specifically from 2017 focusing on the amount of deaths due to heart disease. This is an informative map, as it shows which states have had the highest and lowest number of death by heart disease. The darker the state, the fewer deaths and the brighter the state, the greater amount of deaths.
+
+Alt-Text Graph #1: This is a static graph with the numeric variable "deaths" filling in the map of the United States. Deaths stands for the number of deaths recorded per each state in 2017. It ranges from 0 to just over 60000 with colors associated being darker (purple) for lower numbers and brighter (yellow) for higher numbers of deaths. By viewing the appearance, one evident takeaway from the graph is California having the highest numbers of death due to heart disease in 2017.
+
+```{r}
+#Graph #2: Static with categorical value
+
+#Create data set for categorical var
+cat_death_data <- death_data |>
+  
+  #cleaning col names and selecting cols
+  clean_names() |>
+  select(year, cause_name, state, deaths) |>
+  mutate(state = str_to_lower(state)) |>
+  
+  #filtering cols for join
+  filter(!(state %in% c("alaska", "hawaii", "united states"))) |>
+  filter(cause_name %in% c("Alzheimer's disease", "Stroke"), year == 2017) |>
+  
+  #fixing two rows per state 
+  pivot_wider(
+    names_from = cause_name,
+    values_from = deaths 
+  ) |>
+  
+  #get counts and condition for cat var 
+  clean_names() |>
+  count(state, stroke, alzheimers_disease) |>
+  mutate(death_type = ifelse(stroke > alzheimers_disease, "S", "A")) |>
+  
+  #Join data set to us_states
+  right_join(us_states, by = c("state" = "region")) |>
+  rename(region = state) 
+  
+  #plot
+  cat_death_data |>
+  ggplot(mapping = aes(x = long, y = lat,
+                          group = group)) + 
+  geom_polygon(aes(fill = death_type), color = "gray33", linewidth = 0.2) + 
+  coord_map() + 
+  theme_void() +  
+  scale_fill_manual(values = c("plum4", "darkseagreen3"),
+                    labels = c("Alzheimers", "Stroke")) +
+  labs(fill = "Cause of Death",
+       title = "United States: Highest Cause of Death Between Alzheimers and Stroke in 2017",
+       caption = "Data Source: data.gov") 
+
+```
+
+Description #2: This is a static categorical map of the United States and sourced from data.gov. Each state compares the number of deaths due to Alzheimer's and Stroke in 2017, whichever cause of death is recorded most per state is what that state is labelled. For example, Minnesota has more recorded deaths due to Alzheimer's then Strokes, so it is filled with purple to represent Alzheimer's. We can see that more states appear to have more deaths due to Stroke than Alzheimer's.
