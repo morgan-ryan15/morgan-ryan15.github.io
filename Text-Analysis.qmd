@@ -4,6 +4,8 @@ format: html
 author: "Morgan Ryan"
 editor_options: 
   chunk_output_type: console
+resource_files:
+- "Text-Analysis.html"
 ---
 
 ```{r}
