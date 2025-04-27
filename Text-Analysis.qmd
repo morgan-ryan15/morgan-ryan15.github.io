@@ -58,8 +58,9 @@ tidy_fleet_mac
 smart_stopwords <- get_stopwords(source = "smart")
 ```
 
-Table of expressive words used in songs
+*Table of expressive words used in songs*
 - expressive = oohs, ahs, etc
+I found this partially on accident after working on removing them from my text analysis, but thought it would be fun to include.  
 
 ```{r}
 tidy_fleet_mac |>
@@ -70,7 +71,8 @@ tidy_fleet_mac |>
 
 ```
 
-Graph of most common 20 words
+*Graph of most common 20 words*
+I'm keeping my eye on words that might represent anger, or hint at any tensions between Nicks and Buckingham. We can see how love is prominently first, along with a few other positive words. Before words like women and she enter the charts, this is interesting as maybe she's referencing Buckingham with another women.
 
 ```{r}
 tidy_fleet_mac |>
@@ -89,7 +91,8 @@ tidy_fleet_mac |>
 
 ```
 
-Table and Graph of top 10 positive and negative words
+*Table and Graph of top 10 positive and negative words*
+I'm not surprised at the higher count of negative words. I feel like Stevie Nicks also weaponizes the "positive" words to sometimes be used demeaningly and often with much irony. As the themes in her songs are often of heartbreak and have a deep emotional depth. 
 
 ```{r}
 fleet_mac_sentiments <- tidy_fleet_mac |>
@@ -115,8 +118,8 @@ fleet_mac_sentiments |>
 
 ```
 
-Basic Word Cloud Using Bing Sentiments
-
+*Basic Word Cloud Using Bing Sentiments*
+Sticking with the irony theme, Love being the largest here really emphasizes that.
 ```{r}
 #| warning: FALSE
 #| message: FALSE
@@ -139,7 +142,8 @@ wordcloud(
 )
 ```
 
-Word Cloud Using NCR Sentiments - Anger
+*Word Cloud Using NCR Sentiments - Anger*
+To try and get around the ironic uses of positive words, I decided to focus on anger. I feel like the selection of negative words she uses are much more direct and tell a more meaningful story. Like honest, broken, lose, crazy, blame, all contribute to a complex story and relationships that she has.
 ```{r}
 ncr_sentiments <- get_sentiments(lexicon = "nrc")
 
@@ -160,7 +164,8 @@ wordcloud(
 )
 ```
 
-Graph as another way to visualize anger word count using song
+*Graph as another way to visualize anger word count using song*
+Here I wanted to explore these negative words with the song as context. Now, when compared to a list I found online, none of these songs would be listed as the top "angry" songs by Fleetwood Mac. But I hope to listen to them and see if they meaningfully add to the narrative.
 
 ```{r}
 ncr_sentiments |>
@@ -180,3 +185,7 @@ ncr_sentiments |>
       y = "Anger Word Count")
 
 ```
+
+*A Note About References to Stevie Nick's Song Writing*
+It should be emphasized that while I reference Nicks as writing the songs, that Buckingham also wrote songs as song are also from his point of view. This doesn't necessarily alter the narrative too much as they both conveyed complex emotions through their music. In a separate project, I might be able to assign who wrote what song and see hwo that changes what I've found.
+
