@@ -165,7 +165,7 @@ wordcloud(
 ```
 
 *Graph as another way to visualize anger word count using song*
-Here I wanted to explore these negative words with the song as context. Now, when compared to a list I found online, none of these songs would be listed as the top "angry" songs by Fleetwood Mac. But I hope to listen to them and see if they meaningfully add to the narrative.
+Here I wanted to explore these negative words with the song as context. Now, when compared to a list I found online, none of these songs would be listed as the top "angry" songs by Fleetwood Mac. I hope to listen to them and see if they meaningfully add to the narrative.
 
 ```{r}
 ncr_sentiments |>
