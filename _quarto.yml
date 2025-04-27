@@ -12,6 +12,7 @@ website:
         href: index.qmd
       - Maps.qmd
       - Data-Acquisition.qmd 
+      - Text-Analysis.qmd
 format:
   html:
     theme: cosmo
