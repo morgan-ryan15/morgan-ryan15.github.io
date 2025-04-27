@@ -232,7 +232,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>smart_stopwords <span class="ot">&lt;-</span> <span class="fu">get_stopwords</span>(<span class="at">source =</span> <span class="st">"smart"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Table of expressive words used in songs - expressive = oohs, ahs, etc</p>
+<p><em>Table of expressive words used in songs</em></p>
+<ul>
+<li>expressive = oohs, ahs, etc</li>
+</ul>
+<p>I found this partially on accident after working on removing them from my text analysis, but thought it would be fun to include.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tidy_fleet_mac <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>line) <span class="sc">|&gt;</span></span>
@@ -259,7 +263,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 14 ooooooohhhhhhh                       1     1</code></pre>
 </div>
 </div>
-<p>Graph of most common 20 words</p>
+<p><em>Graph of most common 20 words</em></p>
+<p>I’m keeping my eye on words that might represent anger, or hint at any tensions between Nicks and Buckingham. We can see how love is prominently first, along with a few other positive words. Before words like women and she enter the charts, this is interesting as maybe she’s referencing Buckingham with another women.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tidy_fleet_mac <span class="sc">|&gt;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(smart_stopwords) <span class="sc">|&gt;</span></span>
@@ -285,7 +290,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Table and Graph of top 10 positive and negative words</p>
+<p><em>Table and Graph of top 10 positive and negative words</em></p>
+<p>I’m not surprised at the higher count of negative words. I feel like Stevie Nicks also weaponizes the “positive” words to sometimes be used demeaningly and often with much irony. As the themes in her songs are often of heartbreak and have a deep emotional depth.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fleet_mac_sentiments <span class="ot">&lt;-</span> tidy_fleet_mac <span class="sc">|&gt;</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(bing_sentiments) <span class="sc">|&gt;</span></span>
@@ -332,7 +338,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Basic Word Cloud Using Bing Sentiments</p>
+<p><em>Basic Word Cloud Using Bing Sentiments</em></p>
+<p>Sticking with the irony theme, Love being the largest here really emphasizes that.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>words_fleet_mac <span class="ot">&lt;-</span> tidy_fleet_mac <span class="sc">|&gt;</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(stop_words, <span class="at">by =</span> <span class="fu">join_by</span>(word)) <span class="sc">|&gt;</span></span>
@@ -358,7 +365,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Word Cloud Using NCR Sentiments - Anger</p>
+<p><em>Word Cloud Using NCR Sentiments - Anger</em></p>
+<p>To try and get around the ironic uses of positive words, I decided to focus on anger. I feel like the selection of negative words she uses are much more direct and tell a more meaningful story. Like honest, broken, lose, crazy, blame, all contribute to a complex story and relationships that she has.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ncr_sentiments <span class="ot">&lt;-</span> <span class="fu">get_sentiments</span>(<span class="at">lexicon =</span> <span class="st">"nrc"</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -387,7 +395,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Graph as another way to visualize anger word count using song</p>
+<p><em>Graph as another way to visualize anger word count using song</em></p>
+<p>Here I wanted to explore these negative words with the song as context. Now, when compared to a list I found online, none of these songs would be listed as the top “angry” songs by Fleetwood Mac. I hope to listen to them and see if they meaningfully add to the narrative.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ncr_sentiments <span class="sc">|&gt;</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sentiment <span class="sc">==</span> <span class="st">"anger"</span>) <span class="sc">|&gt;</span></span>
@@ -415,6 +424,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p><em>A Note About References to Stevie Nick’s Song Writing</em></p>
+<p>It should be emphasized that while I reference Nicks as writing the songs, that Buckingham also wrote songs as song are also from his point of view. This doesn’t necessarily alter the narrative too much as they both conveyed complex emotions through their music. In a separate project, I might be able to assign who wrote what song and see hwo that changes what I’ve found.</p>
 
 
 
